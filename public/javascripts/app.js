@@ -39,23 +39,28 @@ const config = {
       size: _config.size
     })
     socket.emit('done', null)
+    path = []
   }
   const brush = {
     down: (e) => {
       isDrawing = true
-      draw(e, ctx)
+      draw(e, ctx, lastPoint)
       path.push(pathObj(e))
+      emit('brush')
     },
     up: (e) => {
       isDrawing = false
       path.push(pathObj(e))
       emit('brush')
-      path = []
     },
     move: (e) => {
       if (isDrawing) {
-        draw(e, ctx)
+        draw(e, ctx, lastPoint)
+        path.push(pathObj({ x: lastPoint[0], y: lastPoint[1] }))
         path.push(pathObj(e))
+        console.log('from', { x: lastPoint[0], y: lastPoint[1] })
+        console.log('to', e)
+        emit('brush')
       }
       lastPoint = [e.x, e.y]
     }
@@ -101,18 +106,20 @@ const config = {
 
   socket.on('draw', (data) => {
     let { tool, path, color, size } = data
+    console.log(data)
     switch(tool) {
       case 'line':
       case 'brush':
-        for (let i = 0; i < path.length; i++) {
-          const point = path[i];
-          const prev = path[i - 1];
-          lastPoint = [point[0], point[1]]
-          draw({x: point[0], y: point[1]}, ctx, size, color)
-          if (i > 0) {
-            drawLine([prev.x, prev.y], [point.x, point.y], ctx, size, color)
-          }
-        }
+        // for (let i = 0; i < path.length; i++) {
+          const prev = path[0];
+          const point = path[1] || prev;
+        //   lastPoint = [point[0], point[1]]
+          draw({x: prev.x, y: prev.y}, ctx, size, color)
+          draw({x: point.x, y: point.y}, ctx, size, color)
+        //   if (i > 0) {
+          drawLine([prev.x, prev.y], [point.x, point.y], ctx, size, color)
+        //   }
+        // }
       break
       case 'fill':
         // floodFill(path.x, path.y, path.config)
@@ -146,12 +153,14 @@ const config = {
     cv.onmousemove = selectedTool.move
   }
   
-  function draw(e, ctx, size = config.size, color = config.color) {
+  function draw(e, ctx, lastPoint = null, size = config.size, color = config.color) {
     ctx.fillStyle = color;
     ctx.beginPath()
     ctx.arc(e.x, e.y, size / 2, 0, 2 * Math.PI)
     ctx.fill()
-    drawLine(lastPoint, [e.x, e.y], ctx, size, color) //interpolation
+    try {
+      drawLine(lastPoint || [e.x, e.y], [e.x, e.y], ctx, size, color) //interpolation
+    } catch (e) {}
   }
   
   function drawLine(p1, p2, ctx, size = config.size, color = config.color) {
