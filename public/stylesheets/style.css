@@ -1,0 +1,45 @@
+/* styles */
+/* called by your view template */
+
+/* You might want to try something fancier: */
+/* less: http://lesscss.org/ */
+
+* {
+  box-sizing: border-box;
+  font-family: consolas;
+}
+
+body {
+  font-family: helvetica, arial, sans-serif;
+  margin: 25px;
+  margin: 0;
+  padding: 0;
+  background-color: rgb(22, 22, 22);
+}
+
+canvas {
+  position: fixed;
+  /* border: solid black thin; */
+}
+#canvas {
+  background-color: white;
+}
+
+#tools {
+  background-color: rgb(247, 222, 80);
+  position: fixed;
+  z-index: 5;
+  width: 100%;
+  height: 3%;
+  padding: 2px;
+}
+#size_setter {
+  left: 50px;
+  width: 50px;
+}
+#tool_setter {
+  left: 105px;
+}
+#clear {
+  left: 170px;
+}

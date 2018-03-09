@@ -1,80 +1,4 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Painter</title>
-    <meta name="description" content="a tech demo of painter">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  </head>
-  <style>
-    /* styles */
-/* called by your view template */
-
-/* You might want to try something fancier: */
-/* less: http://lesscss.org/ */
-
-* {
-  box-sizing: border-box;
-  font-family: consolas;
-}
-
-body {
-  font-family: helvetica, arial, sans-serif;
-  margin: 25px;
-  margin: 0;
-  padding: 0;
-  background-color: rgb(22, 22, 22);
-}
-
-canvas {
-  position: fixed;
-  /* border: solid black thin; */
-}
-#canvas {
-  background-color: white;
-}
-
-#tools {
-  background-color: rgb(247, 222, 80);
-  position: fixed;
-  z-index: 5;
-  width: 100%;
-  height: 3%;
-  padding: 2px;
-}
-#size_setter {
-  left: 50px;
-  width: 50px;
-}
-#tool_setter {
-  left: 105px;
-}
-#clear {
-  left: 170px;
-}
-  </style>
-  <body>
-    <span id="tools">
-      <label>Color:</label>
-      <input id="color_picker" type="color" onchange="setColor()" />
-      <label>Size:</label>
-      <input id="size_setter" type="number" min="0" value="1" onchange="setSize()" />
-      <label>Tool:</label>
-      <select id="tool_setter" onchange="pickTool()">
-        <option value="brush">brush</option>
-        <option value="line">line</option>
-        <option value="fill">fill</option>
-      </select>
-      <button id="clear" onclick="onPressClearCanvas()">Clear</button>
-    </span>
-
-    <canvas id="canvas"></canvas>
-    <canvas id="canvas_virtual_layer"></canvas>
-
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js'></script>
-    <script>
-      const config = {
+const config = {
     size: 1,
     color: 'black',
     tool: null,
@@ -382,6 +306,3 @@ canvas {
 
 
   
-    </script>
-  </body>
-</html>
