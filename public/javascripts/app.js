@@ -21,13 +21,8 @@ const config = {
   let lastPoint = []
   let isLocked = false
   let path = []
-  // let HOST = location.origin.replace(/^http/, 'ws')
-  // HOST = location.origin.replace(/:[\d]{4}/, ':3001')
-  // HOST = HOST.replace('3000', '3001')
-  // console.log(HOST)
-  // socket = io.connect(HOST);
+  
   socket = io.connect();
-  // socket = io.connect('ws://localhost:3001');
   
   //tools
   const pathObj = (e) => { return { x: e.x, y: e.y } }
@@ -110,14 +105,12 @@ const config = {
           const prev = path[0];
           const point = path[1] || prev;
           
-          console.log(color)
           draw({x: prev.x, y: prev.y}, ctx, null, size, color)
           draw({x: point.x, y: point.y}, ctx, null, size, color)
           
           drawLine([prev.x, prev.y], [point.x, point.y], ctx, size, color)
       break
       case 'fill':
-        // floodFill(path.x, path.y, path.config)
         color = color.split(',')
         draw_fill(ctx, path.x, path.y, color.shift(), color.shift(), color.shift(), color.shift())
       break
