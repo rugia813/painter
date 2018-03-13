@@ -58,8 +58,6 @@ const config = {
         draw(e, ctx, lastPoint)
         path.push(pathObj({ x: lastPoint[0], y: lastPoint[1] }))
         path.push(pathObj(e))
-        console.log('from', { x: lastPoint[0], y: lastPoint[1] })
-        console.log('to', e)
         emit('brush')
       }
       lastPoint = [e.x, e.y]
@@ -106,20 +104,17 @@ const config = {
 
   socket.on('draw', (data) => {
     let { tool, path, color, size } = data
-    console.log(data)
     switch(tool) {
       case 'line':
       case 'brush':
-        // for (let i = 0; i < path.length; i++) {
           const prev = path[0];
           const point = path[1] || prev;
-        //   lastPoint = [point[0], point[1]]
-          draw({x: prev.x, y: prev.y}, ctx, size, color)
-          draw({x: point.x, y: point.y}, ctx, size, color)
-        //   if (i > 0) {
+          
+          console.log(color)
+          draw({x: prev.x, y: prev.y}, ctx, null, size, color)
+          draw({x: point.x, y: point.y}, ctx, null, size, color)
+          
           drawLine([prev.x, prev.y], [point.x, point.y], ctx, size, color)
-        //   }
-        // }
       break
       case 'fill':
         // floodFill(path.x, path.y, path.config)
@@ -127,7 +122,7 @@ const config = {
         draw_fill(ctx, path.x, path.y, color.shift(), color.shift(), color.shift(), color.shift())
       break
       case 'clear':
-      clearCanvas()
+        clearCanvas()
       break
     }
   });
@@ -154,7 +149,7 @@ const config = {
   }
   
   function draw(e, ctx, lastPoint = null, size = config.size, color = config.color) {
-    ctx.fillStyle = color;
+    ctx.fillStyle = `rgba(${color})`;
     ctx.beginPath()
     ctx.arc(e.x, e.y, size / 2, 0, 2 * Math.PI)
     ctx.fill()
