@@ -25,7 +25,7 @@ const config = {
   socket = io.connect();
   
   //tools
-  const pathObj = (e) => { return { x: e.x, y: e.y } }
+  const pathObj = (e) => { return { x: e.offsetX, y: e.offsetY } }
   const emit = (type, _path = path, _config = config) => {
     socket.emit('draw', { 
       tool: type, 
@@ -39,7 +39,7 @@ const config = {
   const brush = {
     down: (e) => {
       isDrawing = true
-      draw(e, ctx, lastPoint)
+      draw(e.offsetX, e.offsetY, ctx, lastPoint)
       path.push(pathObj(e))
       emit('brush')
     },
@@ -50,26 +50,26 @@ const config = {
     },
     move: (e) => {
       if (isDrawing) {
-        draw(e, ctx, lastPoint)
-        path.push(pathObj({ x: lastPoint[0], y: lastPoint[1] }))
+        draw(e.offsetX, e.offsetY, ctx, lastPoint)
+        path.push(pathObj({ offsetX: lastPoint[0], offsetY: lastPoint[1] }))
         path.push(pathObj(e))
         emit('brush')
       }
-      lastPoint = [e.x, e.y]
+      lastPoint = [e.offsetX, e.offsetY]
     }
   }
   const line = {
     down: (e) => {
       isDrawing = true
-      lastPoint = [e.x, e.y]
-      draw(e, ctx)
+      lastPoint = [e.offsetX, e.offsetY]
+      draw(e.offsetX, e.offsetY, ctx)
       path.push(pathObj(e))
     },
     up: (e) => {
       isDrawing = false
       clearCanvas(cv_ctx)
-      drawLine(lastPoint, [e.x, e.y], ctx)
-      draw(e, ctx)
+      drawLine(lastPoint, [e.offsetX, e.offsetY], ctx)
+      draw(e.offsetX, e.offsetY, ctx)
       path.push(pathObj(e))
       emit('line')
       path = []
@@ -77,17 +77,17 @@ const config = {
     move: (e) => {
       if (isDrawing) {
         clearCanvas(cv_ctx)
-        drawLine(lastPoint, [e.x, e.y], cv_ctx)
-        draw(e, cv_ctx)
+        drawLine(lastPoint, [e.offsetX, e.offsetY], cv_ctx)
+        draw(e.offsetX, e.offsetY, cv_ctx)
       }
     }
   }
   const fill = {
     down: (e) => {
       const color = config.color.split(',')
-      draw_fill(ctx, e.x, e.y, color.shift(), color.shift(), color.shift(), color.shift())
+      draw_fill(ctx, e.offsetX, e.offsetY, color.shift(), color.shift(), color.shift(), color.shift())
       // floodFill(e.x, e.y, config)
-      emit('fill', {x: e.x, y: e.y, config})
+      emit('fill', {x: e.offsetX, y: e.offsetY, config})
       path = []
     },
     up: (e) => { },
@@ -102,13 +102,13 @@ const config = {
     switch(tool) {
       case 'line':
       case 'brush':
-          const prev = path[0];
-          const point = path[1] || prev;
-          
-          draw({x: prev.x, y: prev.y}, ctx, null, size, color)
-          draw({x: point.x, y: point.y}, ctx, null, size, color)
-          
-          drawLine([prev.x, prev.y], [point.x, point.y], ctx, size, color)
+        const prev = path[0];
+        const point = path[1] || prev;
+        
+        draw(prev.x, prev.y, ctx, null, size, color)
+        draw(point.x, point.y, ctx, null, size, color)
+        
+        drawLine([prev.x, prev.y], [point.x, point.y], ctx, size, color)
       break
       case 'fill':
         color = color.split(',')
@@ -141,13 +141,13 @@ const config = {
     cv.onmousemove = selectedTool.move
   }
   
-  function draw(e, ctx, lastPoint = null, size = config.size, color = config.color) {
+  function draw(x, y, ctx, lastPoint = null, size = config.size, color = config.color) {
     ctx.fillStyle = `rgba(${color})`;
     ctx.beginPath()
-    ctx.arc(e.x, e.y, size / 2, 0, 2 * Math.PI)
+    ctx.arc(x, y, size / 2, 0, 2 * Math.PI)
     ctx.fill()
     try {
-      drawLine(lastPoint || [e.x, e.y], [e.x, e.y], ctx, size, color) //interpolation
+      drawLine(lastPoint || [x, y], [x, y], ctx, size, color) //interpolation
     } catch (e) {}
   }
   
