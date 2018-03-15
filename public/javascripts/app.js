@@ -10,7 +10,6 @@ const config = {
   canvas.width = config.width
   canvas.height = config.height
   const ctx = canvas.getContext('2d')
-  ctx.imageSmoothingEnabled = false
   //virtual layer canvas
   const cv = document.querySelector('#canvas_virtual_layer')
   cv.width = config.width
@@ -135,7 +134,7 @@ const config = {
   }
   
   function setTool(selectedTool) {
-    cv.onmousedown = selectedTool.down
+    cv.onmousedown = (e) => (e.which == 1) && selectedTool.down(e)
     // document.onmouseleave = selectedTool.up
     cv.onmouseup = selectedTool.up
     cv.onmousemove = selectedTool.move
