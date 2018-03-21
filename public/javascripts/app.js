@@ -55,6 +55,12 @@ const config = {
         emit('brush')
       }
       lastPoint = [e.offsetX, e.offsetY]
+    },
+    leave: (e) => {
+      if (isDrawing) {
+        isDrawing = false
+        drawLine(lastPoint, [e.offsetX, e.offsetY], ctx)
+      }
     }
   }
   const line = {
@@ -65,6 +71,7 @@ const config = {
       path.push(pathObj(e))
     },
     up: (e) => {
+      if (!isDrawing) return
       isDrawing = false
       clearCanvas(cv_ctx)
       drawLine(lastPoint, [e.offsetX, e.offsetY], ctx)
@@ -74,13 +81,14 @@ const config = {
       path = []
     },
     move: (e) => {
-      if (isDrawing) {
-        clearCanvas(cv_ctx)
-        drawLine(lastPoint, [e.offsetX, e.offsetY], cv_ctx)
-        draw(e.offsetX, e.offsetY, cv_ctx)
-      }
+      if (!isDrawing) return
+      clearCanvas(cv_ctx)
+      drawLine(lastPoint, [e.offsetX, e.offsetY], cv_ctx)
+      draw(e.offsetX, e.offsetY, cv_ctx)
     }
   }
+  
+  //lib algorithm
   const fill = {
     down: (e) => {
       const color = config.color.split(',')
@@ -92,10 +100,23 @@ const config = {
     up: (e) => { },
     move: (e) => { }
   }
+
+  //my algorithm
+  const fill2 = {
+    down: (e) => {
+      floodFill(e.offsetX, e.offsetY, config)
+      emit('fill', {x: e.offsetX, y: e.offsetY, config})
+      path = []
+    },
+    up: (e) => { },
+    move: (e) => { }
+  }
+  
   const tools = {
-    brush, line, fill
+    brush, line, fill, fill2
   }
 
+  //sync
   socket.on('draw', (data) => {
     let { tool, path, color, size } = data
     switch(tool) {
@@ -135,9 +156,9 @@ const config = {
   
   function setTool(selectedTool) {
     cv.onmousedown = (e) => (e.which == 1) && selectedTool.down(e)
-    // document.onmouseleave = selectedTool.up
-    cv.onmouseup = selectedTool.up
-    cv.onmousemove = selectedTool.move
+    cv.onmouseleave = selectedTool.leave
+    document.onmouseup = selectedTool.up
+    document.onmousemove = selectedTool.move
   }
   
   function draw(x, y, ctx, lastPoint = null, size = config.size, color = config.color) {
@@ -169,6 +190,7 @@ const config = {
       ctx.fillStyle = color
       ctx.fillRect(_x, _y, 1, 1)
     }
+
     _setColor(1, 1, value)
     value = getColor(1, 1)
     config.color = value
@@ -179,8 +201,8 @@ const config = {
     config.size = value
   }
   
-  function pickTool() {
-    const value = document.querySelector('#tool_setter').value
+  function pickTool(value = 'brush') {
+    // const value = document.querySelector('#tool_setter').value
     config.tool = tools[value]
     setTool(tools[value])
   }
@@ -193,6 +215,7 @@ const config = {
     emit('clear')
     clearCanvas(context)
   }
+
   function draw_fill(ctx, x, y, fill_r, fill_g, fill_b, fill_a){
 	
     // TODO: split up processing in case it takes too long?
@@ -292,7 +315,7 @@ const config = {
   //INIT
   setColor(config.color)
   setSize(config.size)
-  pickTool(config.tool)
+  pickTool()
 
 
 

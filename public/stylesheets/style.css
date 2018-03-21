@@ -48,26 +48,52 @@ canvas {
   border-radius: 5px;
   /* border: solid black thin; */
   box-shadow: 1px 1px 9px 0px #777777;
+  cursor: crosshair;
 }
 #canvas {
   background-color: white;
 }
 
+/*TOOLS*/
 #tools {
   background-color: rgb(247, 222, 80);
   position: fixed;
   z-index: 5;
   width: 1026px;
   /* height: 3%; */
-  padding: 2px;
+  padding: 0 2px 5px 2px;
+}
+input[type=radio] {
+  display:none; 
+  margin:10px;
+}
+input[type=radio] + label {
+  display: inline-block;
+  margin: -3px;
+  padding: 4px 12px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  border: rgb(212, 180, 0) 1px solid;
+  box-shadow: inset 0px 0px 3px 1px #000000;
+}
+input[type=radio]:checked + label { 
+  background-color: #ffbf14;
+  box-shadow: inset 0px 0px 6px 1px #502208;
 }
 #size_setter {
-  left: 50px;
-  width: 50px;
-}
-#tool_setter {
-  left: 105px;
 }
 #clear {
-  left: 170px;
+  margin-left: 3px;
+  padding: 7px 13px;
+  background-color: #eaffe1;
+  border-radius: 5px;
+  border: rgb(212, 180, 0) 1px solid;
+  box-shadow: inset 0px 0px 3px 1px #000000;
+}
+#clear:active {
+  background-color: #8cce70;
+}
+svg {
+  width:15px;
+  height:15px;
 }
