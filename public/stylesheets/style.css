@@ -61,7 +61,9 @@ canvas {
   z-index: 5;
   width: 1026px;
   /* height: 3%; */
-  padding: 0 2px 5px 2px;
+  padding: 0 2px 5px 12px;
+  border-bottom: #d0d0d0 thin solid;
+  border-top: #a7a7a7 thin solid;
 }
 input[type=radio] {
   display:none; 
@@ -96,4 +98,8 @@ input[type=radio]:checked + label {
 svg {
   width:15px;
   height:15px;
+}
+#userCount {
+  margin-left: 255px;
+  font-size: small;
 }

@@ -117,6 +117,12 @@ const config = {
   }
 
   //sync
+  socket.on('message', (data) => {
+    console.log(data)
+  })
+  socket.on('userCount', (data) => {
+    document.querySelector('#userCount>.num').innerText = data
+  })
   socket.on('draw', (data) => {
     let { tool, path, color, size } = data
     switch(tool) {
