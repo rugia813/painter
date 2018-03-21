@@ -15,15 +15,15 @@ const io = socketIO(server);
 
 let userCount = 0
 io.on('connection', (socket) => {
-  console.log('a user connected');
   userCount++
-  io.to(socket.id).emit("userCount", userCount);
-  io.emit("message", 'your id: ' + socket.id);
+  console.log('a user connected', userCount);
+  io.emit("userCount", userCount);
+  io.to(socket.id).emit("message", 'your id: ' + socket.id);
 
   socket.on("disconnect", () => {
     userCount--
     io.emit("userCount", userCount);
-    console.log("a user go out");
+    console.log("a user go out", userCount);
   });
   
   socket.on("draw", (data) => {
