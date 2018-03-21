@@ -1,7 +1,5 @@
-# Node.js Socket.io Example
+# Painter
 
-This example accompanies the
-[Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)
-tutorial.
+canvas painter with socketio for multiplayer syncing
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+url: https://socketiotest-rugia.herokuapp.com/
