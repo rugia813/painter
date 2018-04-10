@@ -319,6 +319,7 @@ const config = {
     }
   }
   //INIT
+  function show_fill2() { document.querySelector('label[for=fill2]').style.display = '' }
   setColor(config.color)
   setSize(config.size)
   pickTool()
